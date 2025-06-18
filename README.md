@@ -1,4 +1,19 @@
-# Graph Algorithms
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/ayushs018/GraphLib.git
+cd GraphLib
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+
+
+## Graph Algorithms
 
 | Functionality                          | File                       | Description                                          | Time Complexity            | Function Name(s)                                                |
 | -------------------------------------- | -------------------------- | ---------------------------------------------------- | -------------------------- | --------------------------------------------------------------- |
@@ -12,7 +27,7 @@
 
 
 
-# Data Structures
+## Data Structures
 
 | Functionality    | File                   | Description                                          | Time Complexity        | Function Name(s)                                               |
 | ---------------- | ---------------------- | ---------------------------------------------------- | ---------------------- | -------------------------------------------------------------- |
@@ -23,7 +38,7 @@
 
 
 
-# Math Utilities
+## Math Utilities
 
 | Functionality              | File                  | Description                                      | Time Complexity           | Function Name(s)          |
 | -------------------------- | --------------------- | ------------------------------------------------ | ------------------------- | ------------------------- |
