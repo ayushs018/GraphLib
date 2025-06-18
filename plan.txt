@@ -1,0 +1,43 @@
+GraphLib/
+├── include/
+│   └── graphlib/
+│       ├── graph.hpp                 ← master graph header
+│       ├── sat.hpp                   ← master SAT header
+│       ├── graph/
+│       │   ├── base.hpp              ← Graph class (adj list, edges)
+│       │   ├── dfs.hpp
+│       │   ├── scc_tarjan.hpp
+│       │   ├── dijkstra.hpp
+│       │   ├── bellman_ford.hpp
+│       │   ├── hld.hpp
+│       │   ├── lca.hpp
+│       │   ├── mincut_gomoryhu.hpp
+│       │   └── ... (more)
+│       ├── sat/
+│       │   ├── solver.hpp            ← CDCL SAT solver
+│       │   ├── cnf_parser.hpp
+│       │   ├── watched_literals.hpp
+│       │   └── clause_learning.hpp
+│       ├── ds/
+│       │   ├── union_find.hpp
+│       │   ├── segment_tree.hpp
+│       │   └── ...
+│       ├── utils/
+│       │   ├── timer.hpp
+│       │   ├── logger.hpp
+│       │   └── ...
+├── src/
+│   ├── main.cpp                      ← usage demo or CLI entry
+│   ├── graph/
+│   │   ├── dfs.cpp
+│   │   ├── scc_tarjan.cpp
+│   │   └── ...
+│   ├── sat_solver/
+│   │   ├── solver.cpp
+│   │   └── ...
+├── tests/
+│   ├── test_graph.cpp
+│   ├── test_sat.cpp
+│   └── ...
+├── build/                            ← output folder
+├── README.md
