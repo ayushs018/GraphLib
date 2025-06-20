@@ -1,33 +1,31 @@
 #pragma once
 #define ll long long
 
-#include "graphlib/graph/base.hpp"
 #include <vector>
-
-using namespace std;
-
-namespace graphlib {
+#include <functional>
+#include "graphlib/ds/segment_tree.hpp"
 
 class HLD {
 public:
-    HLD(const Graph& g, ll root = 0);
-
-    // Returns the index of each node in the segment tree
-    const vector<ll>& position() const;
-
-    // Returns the head of the heavy path for each node
-    const vector<ll>& head_node() const;
-
-    // Path decomposition from u to v
-    vector<pair<ll, ll>> get_path_segments(ll u, ll v) const;
+    HLD(int n);
+    void add_edge(int u, int v);
+    void build(int root, const std::vector<ll>& node_values,
+               std::function<ll(ll, ll)> merge, ll neutral);
+    ll query_path(int u, int v);
+    void update_node(int u, ll val);
 
 private:
-    const Graph& graph;
-    ll n, current_pos, root;
-    vector<ll> parent, depth, heavy, head, pos, size;
+    int n;
+    int current_pos;
 
-    ll dfs(ll u, ll p);
-    void decompose(ll u, ll h);
+    std::vector<std::vector<int>> adj;
+    std::vector<int> parent, depth, heavy, head, pos, size;
+    std::vector<ll> base_array;
+
+    graphlib::SegmentTree<ll>* segtree;
+    std::function<ll(ll, ll)> merge_fn;
+    ll neutral_element;
+
+    int dfs(int v, int p);
+    void decompose(int v, int h);
 };
-
-}

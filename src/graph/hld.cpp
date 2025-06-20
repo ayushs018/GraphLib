@@ -1,76 +1,79 @@
 #define ll long long
 
 #include "graphlib/graph/hld.hpp"
-#include <algorithm>
 
 using namespace std;
+using namespace graphlib;
 
-namespace graphlib {
-
-HLD::HLD(const Graph& g, ll root) : graph(g), root(root), n(g.n) {
-    parent.assign(n, -1);
-    depth.assign(n, 0);
+HLD::HLD(int n) : n(n), current_pos(0) {
+    adj.resize(n);
+    parent.resize(n);
+    depth.resize(n);
     heavy.assign(n, -1);
-    head.assign(n, 0);
-    pos.assign(n, 0);
-    size.assign(n, 0);
-    current_pos = 0;
+    head.resize(n);
+    pos.resize(n);
+    size.resize(n);
+}
 
+void HLD::add_edge(int u, int v) {
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+}
+
+int HLD::dfs(int v, int p) {
+    parent[v] = p;
+    size[v] = 1;
+    int max_size = 0;
+    for (int u : adj[v]) {
+        if (u == p) continue;
+        depth[u] = depth[v] + 1;
+        int sz = dfs(u, v);
+        size[v] += sz;
+        if (sz > max_size) {
+            max_size = sz;
+            heavy[v] = u;
+        }
+    }
+    return size[v];
+}
+
+void HLD::decompose(int v, int h) {
+    head[v] = h;
+    pos[v] = current_pos++;
+    if (heavy[v] != -1)
+        decompose(heavy[v], h);
+    for (int u : adj[v]) {
+        if (u != parent[v] && u != heavy[v])
+            decompose(u, u);
+    }
+}
+
+void HLD::build(int root, const vector<ll>& node_values,
+                function<ll(ll, ll)> merge, ll neutral) {
+    merge_fn = merge;
+    neutral_element = neutral;
     dfs(root, -1);
     decompose(root, root);
+    base_array.resize(n);
+    for (int i = 0; i < n; ++i)
+        base_array[pos[i]] = node_values[i];
+    segtree = new SegmentTree<ll>(base_array, merge_fn, neutral_element);
 }
 
-ll HLD::dfs(ll u, ll p) {
-    size[u] = 1;
-    ll max_subtree = 0;
-    for (auto& e : graph.adj[u]) {
-        ll v = e.to;
-        if (v == p) continue;
-        parent[v] = u;
-        depth[v] = depth[u] + 1;
-        ll subtree_size = dfs(v, u);
-        size[u] += subtree_size;
-        if (subtree_size > max_subtree) {
-            max_subtree = subtree_size;
-            heavy[u] = v;
-        }
-    }
-    return size[u];
-}
-
-void HLD::decompose(ll u, ll h) {
-    head[u] = h;
-    pos[u] = current_pos++;
-
-    if (heavy[u] != -1)
-        decompose(heavy[u], h);
-
-    for (auto& e : graph.adj[u]) {
-        ll v = e.to;
-        if (v != parent[u] && v != heavy[u]) {
-            decompose(v, v);
-        }
-    }
-}
-
-const vector<ll>& HLD::position() const {
-    return pos;
-}
-
-const vector<ll>& HLD::head_node() const {
-    return head;
-}
-
-vector<pair<ll, ll>> HLD::get_path_segments(ll u, ll v) const {
-    vector<pair<ll, ll>> segments;
+ll HLD::query_path(int u, int v) {
+    ll res = neutral_element;
     while (head[u] != head[v]) {
-        if (depth[head[u]] < depth[head[v]]) swap(u, v);
-        segments.push_back({pos[head[u]], pos[u]});
+        if (depth[head[u]] < depth[head[v]])
+            swap(u, v);
+        res = merge_fn(res, segtree->query(pos[head[u]], pos[u]));
         u = parent[head[u]];
     }
-    if (depth[u] > depth[v]) swap(u, v);
-    segments.push_back({pos[u], pos[v]});
-    return segments;
+    if (depth[u] > depth[v])
+        swap(u, v);
+    res = merge_fn(res, segtree->query(pos[u], pos[v]));
+    return res;
 }
 
+void HLD::update_node(int u, ll val) {
+    segtree->update(pos[u], val);
 }
