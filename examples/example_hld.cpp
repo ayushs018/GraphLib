@@ -1,9 +1,7 @@
 #include <iostream>
 #include <functional>
 #include "graphlib/graph/hld.hpp"
-
 using namespace std;
-
 ll merge_sum(ll a, ll b) {
     return a + b;
 }

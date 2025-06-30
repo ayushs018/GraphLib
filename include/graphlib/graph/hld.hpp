@@ -4,7 +4,7 @@
 #include <vector>
 #include <functional>
 #include "graphlib/ds/segment_tree.hpp"
-
+namespace graphlib{
 class HLD {
 public:
     HLD(int n);
@@ -29,3 +29,4 @@ private:
     int dfs(int v, int p);
     void decompose(int v, int h);
 };
+}
